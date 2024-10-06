@@ -5,38 +5,35 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EzShare.Infrastructure.Repositories;
 
-public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T>
+    where T : BaseEntity
 {
-    protected readonly AppDbContext Context;
-
-    public GenericRepository(AppDbContext context) => Context = context;
-
     public async Task<T?> GetByIdAsync(int id)
     { 
-        return await Context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);  
+        return await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);  
     }
 
     public async Task<IReadOnlyList<T>> GetAllAsync()
     {
-        return await Context.Set<T>().AsNoTracking().ToListAsync();
+        return await context.Set<T>().AsNoTracking().ToListAsync();
     }
 
     public async Task<T> AddAsync(T entity)
     {
-        var entry = await Context.Set<T>().AddAsync(entity);
-        await Context.SaveChangesAsync();
+        var entry = await context.Set<T>().AddAsync(entity);
+        await context.SaveChangesAsync();
         return entry.Entity;
     }
 
     public async Task UpdateAsync(T entity)
     {
-        Context.Entry(entity).State = EntityState.Modified;
-        await Context.SaveChangesAsync();
+        context.Entry(entity).State = EntityState.Modified;
+        await context.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(T entity)
     {
-        Context.Set<T>().Remove(entity);
-        await Context.SaveChangesAsync();
+        context.Set<T>().Remove(entity);
+        await context.SaveChangesAsync();
     }
 }
