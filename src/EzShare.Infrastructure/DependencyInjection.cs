@@ -1,6 +1,8 @@
 ﻿using EzShare.Application.Contracts.Repositories;
+using EzShare.Application.Contracts.Services;
 using EzShare.Infrastructure.Database;
 using EzShare.Infrastructure.Repositories;
+using EzShare.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton(configuration);
+        
         services.AddDbContext<AppDbContext>(x => 
             x.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
@@ -21,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUploadRepository, UploadRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+
+        services.AddScoped<IAuthService, AuthService>();
         
         return services;
     }
