@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using EzShare.Application.PipelineBehaviors;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace EzShare.Application;
 
@@ -11,6 +15,11 @@ public static class DependencyInjection
         {
             x.RegisterServicesFromAssembly(assembly);
         });
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        
+        services.AddValidatorsFromAssembly(assembly);
+        services.AddFluentValidationAutoValidation();
+        
         return services;
     }
 }

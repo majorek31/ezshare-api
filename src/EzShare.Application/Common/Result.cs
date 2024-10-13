@@ -6,9 +6,9 @@ public class Result<T>
 {
     public bool Succeeded { get; }
     public T? Data { get; }
-    public string? Error { get; }
+    public object? Error { get; }
     public HttpStatusCode StatusCode { get; }
-    protected Result(bool succeeded, T? data, string? error, HttpStatusCode httpStatusCode)
+    protected Result(bool succeeded, T? data, object? error, HttpStatusCode httpStatusCode)
     {
         Succeeded = succeeded;
         Data = data;
@@ -21,7 +21,7 @@ public class Result<T>
         return new Result<T>(true, data, null, httpStatusCode);
     }
     
-    public static Result<T> Failure(string error, HttpStatusCode httpStatusCode)
+    public static Result<T> Failure(object error, HttpStatusCode httpStatusCode)
     {
         return new Result<T>(false, default, error, httpStatusCode);
     }
