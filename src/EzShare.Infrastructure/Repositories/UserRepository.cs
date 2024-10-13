@@ -39,7 +39,7 @@ public class UserRepository(AppDbContext context) : GenericRepository<User>(cont
     {
         var user = await GetByEmailAsync(email);
         if (user is null) return null;
-        return BCrypt.Net.BCrypt.Verify(user.PasswordHash, password) ? user : null;
+        return BCrypt.Net.BCrypt.Verify(password, user.PasswordHash) ? user : null;
     }
 
     public async Task<bool> IsEmailUniqueAsync(string email)

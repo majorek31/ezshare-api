@@ -4,5 +4,6 @@ namespace EzShare.Application.Contracts.Services;
 
 public interface IAuthService
 {
-    Task<string> GenerateJwtAsync(User user);
+    Task<string> GenerateAccessToken(User user);
+    Task<string> GenerateRefreshTokenAsync(User user);
 }

@@ -1,6 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using EzShare.Application.Contracts.Repositories;
 using EzShare.Application.Contracts.Services;
 using EzShare.Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +10,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace EzShare.Infrastructure.Services;
 
-public class AuthService(IConfiguration configuration) : IAuthService
+public class AuthService(IConfiguration configuration, IUserRepository userRepository) : IAuthService
 {
-    public Task<string> GenerateJwtAsync(User user)
+    public async Task<string> GenerateAccessToken(User user)
     {
         var handler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(configuration.GetValue<string>("JWT:PrivateKey") ?? throw new Exception("JWT:PrivateKey not present"));
@@ -26,6 +28,14 @@ public class AuthService(IConfiguration configuration) : IAuthService
             SigningCredentials = credentials
         };
         var token = handler.CreateToken(tokenDescriptor);
-        return Task.FromResult(handler.WriteToken(token));
+        return handler.WriteToken(token);
+    }
+
+    public async Task<string> GenerateRefreshTokenAsync(User user)
+    {
+        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        user.RefreshToken = token;
+        await userRepository.UpdateAsync(user);
+        return token;
     }
 }
