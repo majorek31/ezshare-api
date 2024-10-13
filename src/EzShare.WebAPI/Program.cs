@@ -1,5 +1,6 @@
 using EzShare.Application;
 using EzShare.Infrastructure;
+using EzShare.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +20,18 @@ builder.Services
 
 var app = builder.Build();
 
+var scope = app.Services.CreateScope();
+
+var seeder = scope.ServiceProvider.GetService<DatabaseSeeder>();
+await seeder?.SeedData()!;
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.MapControllers();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

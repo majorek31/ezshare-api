@@ -1,5 +1,6 @@
 ﻿using EzShare.Application.Contracts.Repositories;
 using EzShare.Domain.Common;
+using EzShare.Domain.Entities;
 using EzShare.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T>
         return await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);  
     }
 
-    public async Task<IReadOnlyList<T>> GetAllAsync()
+    public async Task<List<T>> GetAllAsync()
     {
         return await context.Set<T>().AsNoTracking().ToListAsync();
     }

@@ -8,13 +8,9 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
-        builder.HasKey(r => r.Id);
-        builder.Property(r => r.Name).IsRequired().HasMaxLength(50);
-        var roles = new List<Role>
-        {
-            new Role { Id = 1, Name = "Admin", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow},
-            new Role { Id = 2, Name = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow},
-        };
-        builder.HasData(roles);
+        builder.ToTable("Roles");
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(50);
     }
 }
