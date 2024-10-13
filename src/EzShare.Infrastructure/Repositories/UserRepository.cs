@@ -46,4 +46,13 @@ public class UserRepository(AppDbContext context) : GenericRepository<User>(cont
     {
         return await GetByEmailAsync(email) is null;
     }
+
+    public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+    {
+        return await _context
+            .Users
+            .Include(x => x.Role)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+    }
 }
