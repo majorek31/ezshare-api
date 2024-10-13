@@ -10,8 +10,8 @@ public class RegisterCommandHandler(IRoleRepository roleRepository, IUserReposit
 {
     public async Task<Result<Unit>> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var doesUserExist = await userRepository.GetByEmailAsync(request.Dto.Email) != null;
-        if (doesUserExist) return Result<Unit>.Failure("This user already exists", HttpStatusCode.Conflict);
+        var isEmailUnique = await userRepository.IsEmailUniqueAsync(request.Dto.Email);
+        if (!isEmailUnique) return Result<Unit>.Failure("This user already exists", HttpStatusCode.Conflict);
         
         var user = request.Dto.Adapt<Domain.Entities.User>();
         
