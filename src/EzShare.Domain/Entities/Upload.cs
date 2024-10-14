@@ -9,8 +9,6 @@ public class Upload : BaseEntity
     public string FileExtension { get; set; } = string.Empty;
     public long FileSize { get; set; }
     public string MimeType { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    
     public Guid? UserId { get; set; }
     public User? User { get; set; } = null!;
 }

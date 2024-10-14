@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IRoleRepository, RoleRepository>();
 
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUploadService, UploadService>();
 
         services.AddAuthentication(x =>
         {
