@@ -1,15 +1,16 @@
-﻿using EzShare.Application.Contracts.Repositories;
+﻿using System.Security.Claims;
+using EzShare.Application.Contracts.Repositories;
 using EzShare.Domain.Entities;
 using EzShare.Infrastructure.Database;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EzShare.Infrastructure.Repositories;
 
-public class UserRepository(AppDbContext context) : GenericRepository<User>(context), IUserRepository
+public class UserRepository(AppDbContext context, IHttpContextAccessor httpContextAccessor) : GenericRepository<User>(context), IUserRepository
 {
     private readonly AppDbContext _context = context;
-
-    public new async Task<User?> GetByIdAsync(int id)
+    public new async Task<User?> GetByIdAsync(Guid id)
     {
         return await _context
             .Users
@@ -54,5 +55,11 @@ public class UserRepository(AppDbContext context) : GenericRepository<User>(cont
             .Include(x => x.Role)
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+    }
+
+    public async Task<User?> GetCurrentUserAsync()
+    {
+        var emailClaim = httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email);
+        return emailClaim is null ? null : await GetByEmailAsync(emailClaim.Value);
     }
 }

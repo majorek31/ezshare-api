@@ -9,7 +9,7 @@ namespace EzShare.Infrastructure.Repositories;
 public class GenericRepository<T>(AppDbContext context) : IGenericRepository<T>
     where T : BaseEntity
 {
-    public async Task<T?> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(Guid id)
     { 
         return await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);  
     }
