@@ -35,6 +35,13 @@ public class UploadService(IUploadRepository uploadRepository, IConfiguration co
         return upload;
     }
 
+    public async Task<byte[]> DownloadAsync(Upload upload)
+    {
+        if (!File.Exists(upload.FilePath))
+            throw new FileNotFoundException("File not found.", upload.FilePath);
+        return await File.ReadAllBytesAsync(upload.FilePath);
+    }
+
     public async Task DeleteAsync(Upload upload)
     {
         

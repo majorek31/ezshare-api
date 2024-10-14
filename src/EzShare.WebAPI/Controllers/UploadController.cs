@@ -1,4 +1,5 @@
 ﻿using EzShare.Application.Features.Upload.Commands.UploadFile;
+using EzShare.Application.Features.Upload.Queries.Download;
 using EzShare.Application.Features.Upload.Queries.UploadInfo;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,5 +25,16 @@ public class UploadController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(new UploadInfoQuery(id));
         return StatusCode((int)result.StatusCode, result);
     }
-    
+    [HttpGet("{id}/download")]
+    public async Task<IActionResult> DownloadFile(Guid id)
+    {
+        var result = await mediator.Send(new DownloadFileQuery(id));
+        if (result.Succeeded)
+        {
+            var data = result.Data;
+            if (data is null) throw new Exception("File not found.");
+            return File(data.FileContent, data.MimeType, data.FileName);
+        }
+        return StatusCode((int)result.StatusCode, result);
+    }
 }
