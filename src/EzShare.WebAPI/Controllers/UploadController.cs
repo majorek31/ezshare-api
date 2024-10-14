@@ -1,4 +1,5 @@
 ﻿using EzShare.Application.Features.Upload.Commands.UploadFile;
+using EzShare.Application.Features.Upload.Queries.UploadInfo;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,4 +17,12 @@ public class UploadController(IMediator mediator) : ControllerBase
         var result = await mediator.Send(new UploadFileCommand(file));
         return StatusCode((int)result.StatusCode, result);
     }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UploadInfoResponse>> GetUploadInfo(Guid id)
+    {
+        var result = await mediator.Send(new UploadInfoQuery(id));
+        return StatusCode((int)result.StatusCode, result);
+    }
+    
 }
